@@ -9,22 +9,33 @@
           VOD <span class="text-red-500">MTZ</span>
         </span>
       </div>
-      <button
-        v-if="auth.isAuthenticated"
-        @click="handleLogout"
-        class="text-xs text-zinc-400 hover:text-red-400 tracking-widest uppercase transition-colors duration-200 border border-zinc-700 hover:border-red-800 px-4 py-2 rounded"
-      >
-        Déconnexion
-      </button>
+
+      <div v-if="auth.isAuthenticated" class="flex items-center gap-4">
+        <RouterLink
+          to="/profil"
+          class="text-xs text-zinc-400 hover:text-white tracking-widest uppercase transition-colors duration-200"
+        >
+          {{ auth.currentUser?.prenom }} {{ auth.currentUser?.nom }}
+        </RouterLink>
+
+        <button
+          @click="handleLogout"
+          class="text-xs text-zinc-400 hover:text-red-400 tracking-widest uppercase transition-colors duration-200 border border-zinc-700 hover:border-red-800 px-4 py-2 rounded"
+        >
+          Déconnexion
+        </button>
+      </div>
     </div>
   </header>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+
 const router = useRouter()
 const auth = useAuthStore()
+
 function handleLogout() {
   auth.logout()
   router.push('/login')
