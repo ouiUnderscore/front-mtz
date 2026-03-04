@@ -22,6 +22,11 @@ const router = createRouter({
         return auth.isAuthenticated ? '/films' : '/login'
       },
     },
+    {
+      path: '/films/:id',
+      component: () => import('@/views/FilmDetailView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 
