@@ -126,7 +126,7 @@ async function chargerFilms() {
   chargement.value = true
   erreur.value = ''
   try {
-    const response = await http.get('/films')
+    const response = await http.get('/api/films')
     films.value = response.data
   } catch (e) {
     const status = e.response?.status
@@ -144,7 +144,7 @@ async function chargerFilms() {
 }
 
 function voirFilm(id) {
-  router.push(`/films/${id}`)
+  router.push(`/api/films/${id}`)
 }
 
 onMounted(() => {

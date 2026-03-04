@@ -160,7 +160,7 @@ async function chargerFilm() {
 }
 
 function retour() {
-  router.push('/films')
+  router.push('/api/films')
 }
 
 onMounted(() => {
