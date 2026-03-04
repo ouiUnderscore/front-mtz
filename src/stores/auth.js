@@ -8,19 +8,18 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(pseudo, mdp) {
       try {
+        // POST : /auth/login
         const { data } = await http.post(
           '/auth/login',
           { pseudo, mdp },
           { headers: { 'Content-Type': 'application/json' } },
         )
-        console.log('Réponse login:', data)
         this.token = data.jeton
         localStorage.setItem('token', data.jeton)
+
+        // GET : /users/{id}
       } catch (e) {
-        console.log('Erreur status:', e.response?.status)
-        console.log('Erreur data:', e.response?.data)
-        console.log('Erreur complète:', e)
-        throw e // ← AJOUTER CETTE LIGNE pour que handleLogin reçoive l'erreur
+        throw e
       }
     },
     logout() {
