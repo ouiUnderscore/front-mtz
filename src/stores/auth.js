@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', {
         this.token = data.jeton
         localStorage.setItem('token', data.jeton)
 
-        // GET : /users → find by pseudo
+        // GET : /users
         await this.fetchUser(pseudo)
       } catch (e) {
         throw e
