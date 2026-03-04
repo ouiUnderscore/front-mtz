@@ -1,5 +1,7 @@
 <template>
   <div class="min-h-screen bg-zinc-950 flex flex-col">
+    <Header />
+
     <!-- Fond décoratif commun -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
       <div
@@ -122,6 +124,7 @@
 
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 
@@ -129,6 +132,8 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import http from '@/api/http'
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
 
 const film = ref(null)
 const chargement = ref(false)
