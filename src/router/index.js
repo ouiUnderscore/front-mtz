@@ -10,6 +10,18 @@ const router = createRouter({
       component: () => import('@/views/FilmsView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/profil',
+      component: () => import('@/views/ProfilPageView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/',
+      redirect: () => {
+        const auth = useAuthStore()
+        return auth.isAuthenticated ? '/films' : '/login'
+      },
+    },
   ],
 })
 
@@ -17,6 +29,9 @@ router.beforeEach((to) => {
   const auth = useAuthStore()
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return '/login'
+  }
+  if (to.path === '/login' && auth.isAuthenticated) {
+    return '/films'
   }
 })
 

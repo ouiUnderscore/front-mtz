@@ -55,14 +55,15 @@
             >Mot de passe</label
           >
           <input
-            v-model="mdp"
-            type="password"
-            placeholder="••••••••"
-            :class="[
-              'w-full bg-zinc-800 border text-white placeholder-zinc-600 rounded-lg px-4 py-3 text-sm outline-none transition-colors duration-200',
-              erreurMdp ? 'border-red-500' : 'border-zinc-700 focus:border-red-600',
-            ]"
-          />
+          v-model="mdp"
+          type="password"
+          placeholder="••••••••"
+          @keyup.enter="handleLogin"
+          :class="[
+            'w-full bg-zinc-800 border text-white placeholder-zinc-600 rounded-lg px-4 py-3 text-sm outline-none transition-colors duration-200',
+            erreurMdp ? 'border-red-500' : 'border-zinc-700 focus:border-red-600',
+          ]"
+        />
           <p v-if="erreurMdp" class="text-red-400 text-xs mt-1">{{ erreurMdp }}</p>
         </div>
 
