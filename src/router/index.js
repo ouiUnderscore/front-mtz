@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => import('@/views/FilmsView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/films/:id',
+      component: () => import('@/views/FilmDetailView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 
