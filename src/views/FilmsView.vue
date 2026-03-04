@@ -149,7 +149,7 @@ async function chargerFilms() {
 }
 
 function voirFilm(id) {
-  router.push(`/api/films/${id}`)
+  router.push(`/films/${id}`)
 }
 
 onMounted(() => {
