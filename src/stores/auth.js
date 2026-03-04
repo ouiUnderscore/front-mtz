@@ -20,6 +20,7 @@ export const useAuthStore = defineStore('auth', {
         console.log('Erreur status:', e.response?.status)
         console.log('Erreur data:', e.response?.data)
         console.log('Erreur complète:', e)
+        throw e // ← AJOUTER CETTE LIGNE pour que handleLogin reçoive l'erreur
       }
     },
     logout() {
