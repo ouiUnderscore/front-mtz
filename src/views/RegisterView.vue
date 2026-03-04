@@ -224,7 +224,7 @@ async function handleRegister() {
         age: parseInt(age.value),
         id: null,
         idReservations: [],
-        motDePasse: mdp.value,
+        motDePasse: null,
         nom: nom.value,
         prenom: prenom.value,
         pseudo: pseudo.value,

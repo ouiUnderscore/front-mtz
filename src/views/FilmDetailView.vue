@@ -2,24 +2,8 @@
   <div class="min-h-screen bg-zinc-950 flex flex-col">
     <Header />
 
-    <!-- Fond décoratif commun -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-      <div
-        class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#1a0a0a_0%,_#09090b_60%)]"
-      ></div>
-      <div
-        class="absolute top-1/3 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-900/40 to-transparent"
-      ></div>
-      <span class="absolute top-16 left-12 text-3xl opacity-10 rotate-12 select-none">🍿</span>
-      <span class="absolute top-32 right-20 text-2xl opacity-10 -rotate-6 select-none">🍿</span>
-      <span class="absolute bottom-32 left-24 text-2xl opacity-10 rotate-3 select-none">🎞️</span>
-      <span class="absolute bottom-20 right-16 text-3xl opacity-10 -rotate-12 select-none">🍿</span>
-      <span class="absolute top-2/3 left-1/2 text-xl opacity-5 rotate-45 select-none">⭐</span>
-    </div>
-
     <!-- Contenu principal -->
     <div class="relative flex-1 flex flex-col px-6 py-12 max-w-3xl mx-auto w-full">
-
       <!-- Bouton retour -->
       <button
         @click="retour"
@@ -46,7 +30,6 @@
 
       <!-- Détail du film -->
       <div v-else-if="film" class="flex flex-col gap-8">
-
         <!-- En-tête : poster + titre -->
         <div class="flex flex-col sm:flex-row gap-6 items-start">
           <!-- Placeholder poster -->
@@ -95,14 +78,18 @@
         <div class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent"></div>
 
         <!-- Informations complémentaires -->
-        <div class="bg-zinc-900/80 backdrop-blur border border-zinc-800 rounded-xl p-6 shadow-xl shadow-black/40">
+        <div
+          class="bg-zinc-900/80 backdrop-blur border border-zinc-800 rounded-xl p-6 shadow-xl shadow-black/40"
+        >
           <h2 class="text-white font-semibold text-sm uppercase tracking-widest mb-4">
             Informations
           </h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <p class="text-zinc-600 text-xs uppercase tracking-widest mb-1">Année de réalisation</p>
+              <p class="text-zinc-600 text-xs uppercase tracking-widest mb-1">
+                Année de réalisation
+              </p>
               <p class="text-zinc-200 text-sm font-medium">{{ film.anneeReal }}</p>
             </div>
             <div>
@@ -115,13 +102,15 @@
             </div>
             <div>
               <p class="text-zinc-600 text-xs uppercase tracking-widest mb-1">Disponibilité</p>
-              <p class="text-sm font-medium" :class="film.estDisponible ? 'text-green-400' : 'text-zinc-500'">
+              <p
+                class="text-sm font-medium"
+                :class="film.estDisponible ? 'text-green-400' : 'text-zinc-500'"
+              >
                 {{ film.estDisponible ? 'Disponible' : 'Indisponible' }}
               </p>
             </div>
           </div>
         </div>
-
       </div>
     </div>
     <Footer />
