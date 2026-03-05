@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', {
         this.token = data.jeton
         localStorage.setItem('token', data.jeton)
 
-        // GET : /users → find by pseudo
+        // GET : /users
         await this.fetchUser(pseudo)
       } catch (e) {
         throw e
@@ -40,7 +40,7 @@ export const useAuthStore = defineStore('auth', {
           prenom: found.prenom,
           adresse: found.adresse,
           age: found.age,
-          statut: found.statut,        // true/false → peut servir de "rôle actif"
+          statut: found.statut, // true/false → peut servir de "rôle actif"
           idReservations: found.idReservations,
         }
         localStorage.setItem('user', JSON.stringify(this.user))

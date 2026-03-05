@@ -27,6 +27,10 @@ const router = createRouter({
       component: () => import('@/views/FilmDetailView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/register',
+      component: () => import('@/views/RegisterView.vue'),
+    },
   ],
 })
 
