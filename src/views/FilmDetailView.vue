@@ -325,7 +325,6 @@ async function confirmerReservation() {
   }
 
   chargementReservation.value = true
-  console.log(form_avis)
 
   try {
     await http.post(
