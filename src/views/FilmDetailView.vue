@@ -154,39 +154,6 @@
         </div>
 
         <div class="h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent"></div>
-
-        <div
-          class="bg-zinc-900/80 backdrop-blur border border-zinc-800 rounded-xl p-6 shadow-xl shadow-black/40"
-        >
-          <h2 class="text-white font-semibold text-sm uppercase tracking-widest mb-4">
-            Informations
-          </h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <p class="text-zinc-600 text-xs uppercase tracking-widest mb-1">
-                Année de réalisation
-              </p>
-              <p class="text-zinc-200 text-sm font-medium">{{ film.anneeReal }}</p>
-            </div>
-            <div>
-              <p class="text-zinc-600 text-xs uppercase tracking-widest mb-1">Âge minimum</p>
-              <p class="text-zinc-200 text-sm font-medium">{{ film.ageMin }} ans</p>
-            </div>
-            <div>
-              <p class="text-zinc-600 text-xs uppercase tracking-widest mb-1">Prix</p>
-              <p class="text-zinc-200 text-sm font-medium">{{ film.prix.toFixed(2) }} €</p>
-            </div>
-            <div>
-              <p class="text-zinc-600 text-xs uppercase tracking-widest mb-1">Disponibilité</p>
-              <p
-                class="text-sm font-medium"
-                :class="film.estDisponible ? 'text-green-400' : 'text-zinc-500'"
-              >
-                {{ film.estDisponible ? 'Disponible' : 'Indisponible' }}
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <Footer />
@@ -318,6 +285,10 @@ async function confirmerReservation() {
         headers: { 'Content-Type': 'application/json' },
       },
     )
+    await http.patch('/api/films/' + film.value.id + '/close', {
+      headers: { 'Content-Type': 'application/json' },
+    })
+    film.value.estDisponible = false
 
     succes.value = true
     setTimeout(() => fermerModal(), 2000)
