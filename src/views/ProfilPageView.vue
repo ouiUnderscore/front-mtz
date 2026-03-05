@@ -4,16 +4,25 @@
 
     <!-- Modale de confirmation suppression -->
     <div v-if="afficherModale" class="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="afficherModale = false"></div>
-      <div class="relative w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-2xl shadow-black/60">
+      <div
+        class="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        @click="afficherModale = false"
+      ></div>
+      <div
+        class="relative w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-2xl shadow-black/60"
+      >
         <div class="text-center mb-6">
           <span class="text-4xl">⚠️</span>
           <h2 class="text-white font-bold text-lg mt-3 mb-2">Supprimer le compte</h2>
           <p class="text-zinc-400 text-sm leading-relaxed">
-            Cette action est irréversible. Votre compte et toutes vos données seront définitivement supprimés.
+            Cette action est irréversible. Votre compte et toutes vos données seront définitivement
+            supprimés.
           </p>
         </div>
-        <div v-if="erreurSuppression" class="mb-4 bg-red-950/50 border border-red-800/50 rounded-lg px-4 py-3 flex items-center gap-2">
+        <div
+          v-if="erreurSuppression"
+          class="mb-4 bg-red-950/50 border border-red-800/50 rounded-lg px-4 py-3 flex items-center gap-2"
+        >
           <span class="text-red-400 text-base">⚠️</span>
           <p class="text-red-400 text-xs">{{ erreurSuppression }}</p>
         </div>
@@ -40,22 +49,32 @@
     <!-- Modale détail réservation + avis -->
     <div v-if="resaSelectionnee" class="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="fermerResaModale"></div>
-      <div class="relative w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-2xl shadow-black/60 max-h-[90vh] overflow-y-auto">
-
+      <div
+        class="relative w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-2xl shadow-black/60 max-h-[90vh] overflow-y-auto"
+      >
         <!-- Header modale -->
         <div class="flex items-start justify-between mb-6">
           <div>
             <h2 class="text-white font-bold text-lg">Détail de la réservation</h2>
-            <p class="text-zinc-500 text-xs mt-1 uppercase tracking-widest">#{{ resaSelectionnee.id }}</p>
+            <p class="text-zinc-500 text-xs mt-1 uppercase tracking-widest">
+              #{{ resaSelectionnee.id }}
+            </p>
           </div>
-          <button @click="fermerResaModale" class="text-zinc-500 hover:text-white text-xl leading-none">✕</button>
+          <button
+            @click="fermerResaModale"
+            class="text-zinc-500 hover:text-white text-xl leading-none"
+          >
+            ✕
+          </button>
         </div>
 
         <!-- Infos réservation -->
-        <div class="bg-zinc-800/50 rounded-lg p-4 space-y-3 mb-6">
+        <div class="bg-zinc-800/50 rounded-lg p-4 space-y-3 mb-4">
           <div class="flex justify-between text-sm">
             <span class="text-zinc-500">Description</span>
-            <span class="text-zinc-100 text-right max-w-xs">{{ resaSelectionnee.description }}</span>
+            <span class="text-zinc-100 text-right max-w-xs">{{
+              resaSelectionnee.description
+            }}</span>
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-zinc-500">Début</span>
@@ -67,15 +86,38 @@
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-zinc-500">Statut</span>
-            <span class="text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full bg-green-900/40 text-green-400 border border-green-800/40">
+            <span
+              class="text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full bg-green-900/40 text-green-400 border border-green-800/40"
+            >
               Active
             </span>
           </div>
         </div>
 
+        <!-- Bouton annuler réservation -->
+        <div class="mb-6">
+          <button
+            @click="annulerReservation(resaSelectionnee)"
+            :disabled="annulationEnCours"
+            class="w-full bg-transparent hover:bg-red-900/20 disabled:cursor-not-allowed text-red-500 hover:text-red-400 font-semibold uppercase tracking-widest text-xs py-2.5 px-5 rounded-lg border border-red-800/60 hover:border-red-600/60 transition-all duration-200 flex items-center justify-center gap-2"
+          >
+            <span v-if="annulationEnCours" class="animate-spin">⏳</span>
+            <span>{{ annulationEnCours ? 'Annulation...' : 'Annuler la réservation' }}</span>
+          </button>
+          <div
+            v-if="erreurAnnulation"
+            class="mt-3 bg-red-950/50 border border-red-800/50 rounded-lg px-4 py-3 flex items-center gap-2"
+          >
+            <span class="text-red-400">⚠️</span>
+            <p class="text-red-400 text-xs">{{ erreurAnnulation }}</p>
+          </div>
+        </div>
+
         <!-- Avis existant -->
         <div v-if="avisExistant" class="mb-6">
-          <h3 class="text-xs text-red-500 tracking-widest uppercase font-semibold mb-3">Votre avis</h3>
+          <h3 class="text-xs text-red-500 tracking-widest uppercase font-semibold mb-3">
+            Votre avis
+          </h3>
           <div class="bg-zinc-800/50 rounded-lg p-4 space-y-3">
             <div class="flex items-center gap-1">
               <span
@@ -83,7 +125,8 @@
                 :key="i"
                 class="text-lg"
                 :class="i <= avisExistant.note ? 'text-yellow-400' : 'text-zinc-600'"
-              >★</span>
+                >★</span
+              >
               <span class="text-zinc-400 text-sm ml-2">{{ avisExistant.note }}/5</span>
             </div>
             <p class="text-zinc-300 text-sm">{{ avisExistant.commentaire }}</p>
@@ -96,7 +139,10 @@
             Laisser un avis
           </h3>
 
-          <div v-if="avisEnvoyé" class="bg-green-950/40 border border-green-800/40 rounded-lg px-4 py-3 text-green-400 text-sm text-center">
+          <div
+            v-if="avisEnvoyé"
+            class="bg-green-950/40 border border-green-800/40 rounded-lg px-4 py-3 text-green-400 text-sm text-center"
+          >
             ✓ Merci pour votre avis !
           </div>
 
@@ -111,13 +157,17 @@
                   @click="noteAvis = i"
                   class="text-2xl transition-colors duration-150"
                   :class="i <= noteAvis ? 'text-yellow-400' : 'text-zinc-600 hover:text-yellow-300'"
-                >★</button>
+                >
+                  ★
+                </button>
               </div>
             </div>
 
             <!-- Commentaire -->
             <div>
-              <label class="text-zinc-400 text-xs uppercase tracking-widest mb-2 block">Commentaire</label>
+              <label class="text-zinc-400 text-xs uppercase tracking-widest mb-2 block"
+                >Commentaire</label
+              >
               <textarea
                 v-model="commentaireAvis"
                 rows="3"
@@ -127,7 +177,10 @@
             </div>
 
             <!-- Erreur avis -->
-            <div v-if="erreurAvis" class="bg-red-950/50 border border-red-800/50 rounded-lg px-4 py-3 flex items-center gap-2">
+            <div
+              v-if="erreurAvis"
+              class="bg-red-950/50 border border-red-800/50 rounded-lg px-4 py-3 flex items-center gap-2"
+            >
               <span class="text-red-400 text-base">⚠️</span>
               <p class="text-red-400 text-xs">{{ erreurAvis }}</p>
             </div>
@@ -157,13 +210,25 @@
       </button>
 
       <!-- Bannière -->
-      <div class="relative mb-10 rounded-xl overflow-hidden h-36 bg-gradient-to-r from-red-950 via-zinc-900 to-zinc-950 border border-red-900/30">
+      <div
+        class="relative mb-10 rounded-xl overflow-hidden h-36 bg-gradient-to-r from-red-950 via-zinc-900 to-zinc-950 border border-red-900/30"
+      >
         <div
           class="absolute inset-0 opacity-20"
-          style="background-image: repeating-linear-gradient(45deg, #7f1d1d 0px, #7f1d1d 1px, transparent 1px, transparent 12px);"
+          style="
+            background-image: repeating-linear-gradient(
+              45deg,
+              #7f1d1d 0px,
+              #7f1d1d 1px,
+              transparent 1px,
+              transparent 12px
+            );
+          "
         ></div>
         <div class="absolute bottom-4 left-6 flex items-center gap-4">
-          <div class="w-16 h-16 rounded-full bg-red-900/60 border-2 border-red-500/50 flex items-center justify-center text-2xl font-bold text-red-300">
+          <div
+            class="w-16 h-16 rounded-full bg-red-900/60 border-2 border-red-500/50 flex items-center justify-center text-2xl font-bold text-red-300"
+          >
             {{ initiales }}
           </div>
           <div>
@@ -235,13 +300,15 @@
           >
             <div>
               <p class="text-zinc-100 font-medium">{{ resa.description }}</p>
-              <p class="text-zinc-500 text-xs mt-0.5">{{ resa.date_debut }} → {{ resa.date_fin }}</p>
+              <p class="text-zinc-500 text-xs mt-0.5">
+                {{ resa.date_debut }} → {{ resa.date_fin }}
+              </p>
             </div>
             <div class="flex items-center gap-3">
-              <span class="text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full bg-green-900/40 text-green-400 border border-green-800/40">
-                Active
-              </span>
-              <span class="text-zinc-600 text-xs">→</span>
+              <span
+                class="text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full bg-green-900/40 text-green-400 border border-green-800/40"
+                >Active</span
+              >
             </div>
           </div>
         </div>
@@ -297,6 +364,10 @@ const chargementReservations = ref(false)
 const resaSelectionnee = ref(null)
 const avisExistant = ref(null)
 
+// --- Annulation réservation ---
+const annulationEnCours = ref(false)
+const erreurAnnulation = ref('')
+
 // --- Formulaire avis ---
 const noteAvis = ref(0)
 const commentaireAvis = ref('')
@@ -314,7 +385,7 @@ onMounted(async () => {
   chargementReservations.value = true
   try {
     const { data } = await http.get('api/reservations')
-    reservations.value = data.data.filter(r => parseInt(r.userId) === parseInt(user.value.id))
+    reservations.value = data.data.filter((r) => parseInt(r.userId) === parseInt(user.value.id))
   } catch (e) {
     console.error('Erreur chargement réservations', e)
   } finally {
@@ -334,6 +405,7 @@ async function ouvrirResa(resa) {
   noteAvis.value = 0
   commentaireAvis.value = ''
   erreurAvis.value = ''
+  erreurAnnulation.value = ''
   avisEnvoyé.value = false
 
   try {
@@ -352,6 +424,46 @@ async function ouvrirResa(resa) {
 function fermerResaModale() {
   resaSelectionnee.value = null
   avisExistant.value = null
+  erreurAnnulation.value = ''
+}
+
+async function trouverFilmParIdInt(idInt) {
+  const { data: films } = await http.get('api/films')
+  return films.find((f) => parseInt(f.id.split('-')[0].substring(0, 4), 16) === idInt) ?? null
+}
+
+/**
+ * @function annulerReservation
+ * @description Annule une réservation et remet le film disponible.
+ *
+ * Étape 1 : DELETE /api/reservations/{id}       → supprime la réservation
+ * Étape 2 : PATCH /api/films/{movieId}/open     → remet le film disponible
+ * Étape 3 : Met à jour la liste locale et ferme la modale
+ * @param {Object} resa - L'objet réservation à annuler
+ */
+async function annulerReservation(resa) {
+  annulationEnCours.value = true
+  erreurAnnulation.value = ''
+  try {
+    await http.delete(`api/reservations/${resa.id}`)
+    const film = await trouverFilmParIdInt(parseInt(resa.movieId))
+    if (film) {
+      await http.patch('/api/films/' + film.id + '/open', {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    // Retirer la réservation de la liste locale
+    reservations.value = reservations.value.filter((r) => r.id !== resa.id)
+    fermerResaModale()
+  } catch (e) {
+    const status = e.response?.status
+    if (status === 401) erreurAnnulation.value = 'Session expirée, veuillez vous reconnecter.'
+    else if (status >= 500) erreurAnnulation.value = 'Erreur serveur, réessayez plus tard.'
+    else erreurAnnulation.value = "Impossible d'annuler la réservation."
+  } finally {
+    annulationEnCours.value = false
+  }
 }
 
 /**
@@ -375,16 +487,16 @@ async function soumettreAvis() {
     })
 
     // Étape 2 — Patcher la réservation avec l'evaluationId de l'avis créé
-    await http.patch(`api/reservations/${resaSelectionnee.value.id}`, {
-    id: parseInt(resaSelectionnee.value.id),
-    description: resaSelectionnee.value.description,
-    date_debut: resaSelectionnee.value.date_debut,
-    date_fin: resaSelectionnee.value.date_fin,
-    movieId: parseInt(resaSelectionnee.value.movieId),
-    evaluationId: parseInt(avis.id.split('-')[0].substring(0, 4), 16), // UUID → int via première partie hex
-    userId: parseInt(resaSelectionnee.value.userId),
-    paiementId: parseInt(resaSelectionnee.value.paiementId),
-  })
+    // await http.patch(`api/reservations/${resaSelectionnee.value.id}`, {
+    //   id: parseInt(resaSelectionnee.value.id),
+    //   description: resaSelectionnee.value.description,
+    //   date_debut: resaSelectionnee.value.date_debut,
+    //   date_fin: resaSelectionnee.value.date_fin,
+    //   movieId: parseInt(resaSelectionnee.value.movieId),
+    //   evaluationId: parseInt(avis.id.split('-')[0].substring(0, 4), 16), // UUID → int via première partie hex
+    //   userId: parseInt(resaSelectionnee.value.userId),
+    //   paiementId: parseInt(resaSelectionnee.value.paiementId),
+    // })
 
     avisEnvoyé.value = true
   } catch (e) {
