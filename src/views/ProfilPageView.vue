@@ -127,7 +127,41 @@
 
           <div class="flex justify-between text-sm">
             <span class="text-zinc-500">Réservations</span>
-            <span class="text-zinc-100">{{ user.idReservations?.length ?? 0 }}</span>
+            <span class="text-zinc-100">{{ reservations.length }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Réservations -->
+      <div class="mt-4 bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+        <h2 class="text-xs text-red-500 tracking-widest uppercase font-semibold mb-4">
+          Mes réservations
+        </h2>
+
+        <!-- Chargement -->
+        <div v-if="chargementReservations" class="text-zinc-500 text-sm text-center py-6">
+          <span class="animate-spin inline-block mr-2">⏳</span> Chargement...
+        </div>
+
+        <!-- Vide -->
+        <p v-else-if="reservations.length === 0" class="text-zinc-500 text-sm text-center py-6">
+          Aucune réservation pour le moment.
+        </p>
+
+        <!-- Liste -->
+        <div v-else class="divide-y divide-zinc-800">
+          <div
+            v-for="resa in reservations"
+            :key="resa.id"
+            class="flex items-center justify-between py-3 text-sm"
+          >
+            <div>
+              <p class="text-zinc-100 font-medium">{{ resa.description }}</p>
+              <p class="text-zinc-500 text-xs mt-0.5">{{ resa.date_debut }} → {{ resa.date_fin }}</p>
+            </div>
+            <span class="text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full bg-green-900/40 text-green-400 border border-green-800/40">
+              Active
+            </span>
           </div>
         </div>
       </div>
@@ -158,7 +192,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import http from '@/api/http'
@@ -173,9 +207,25 @@ const afficherModale = ref(false)
 const suppressionEnCours = ref(false)
 const erreurSuppression = ref('')
 
+const reservations = ref([])
+const chargementReservations = ref(false)
+
 const initiales = computed(() => {
   if (!user.value) return '?'
   return `${user.value.prenom?.[0] ?? ''}${user.value.nom?.[0] ?? ''}`.toUpperCase()
+})
+
+onMounted(async () => {
+  if (!user.value?.id) return
+  chargementReservations.value = true
+  try {
+    const { data } = await http.get('api/reservations')
+    reservations.value = data.data.filter(r => parseInt(r.userId) === parseInt(user.value.id))
+  } catch (e) {
+    console.error('Erreur chargement réservations', e)
+  } finally {
+    chargementReservations.value = false
+  }
 })
 
 function retour() {
