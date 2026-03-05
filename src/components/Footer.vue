@@ -1,4 +1,5 @@
 <template>
+  <!-- Pied de page -->
   <footer class="z-10 bg-zinc-950 border-t border-red-900/20 py-6 mt-auto">
     <div class="max-w-6xl mx-auto px-6 text-center space-y-1">
       <p class="text-zinc-500 text-xs tracking-wide">

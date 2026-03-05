@@ -322,6 +322,12 @@ onMounted(async () => {
   }
 })
 
+/**
+ * @function ouvrirResa
+ * @description Ouvre la modale de détail pour une réservation donnée.
+ * Vérifie si un avis existe déjà via GET /api/reviews?idReservation={id}.
+ * @param {Object} resa - L'objet réservation sélectionné
+ */
 async function ouvrirResa(resa) {
   resaSelectionnee.value = resa
   avisExistant.value = null
@@ -330,31 +336,56 @@ async function ouvrirResa(resa) {
   erreurAvis.value = ''
   avisEnvoyé.value = false
 
-  // Vérifier si un avis existe déjà pour cette réservation
   try {
     const { data } = await http.get(`api/reviews?idReservation=${resa.id}`)
     avisExistant.value = data
   } catch {
-    // 404 = pas d'avis encore, c'est normal
+    // 404 = aucun avis existant, comportement attendu
     avisExistant.value = null
   }
 }
 
+/**
+ * @function fermerResaModale
+ * @description Ferme la modale de détail et réinitialise l'état.
+ */
 function fermerResaModale() {
   resaSelectionnee.value = null
   avisExistant.value = null
 }
 
+/**
+ * @function soumettreAvis
+ * @description Soumet un nouvel avis pour la réservation sélectionnée.
+ *
+ * Étape 1 : POST /api/reviews → crée l'avis avec { idReservation, note, commentaire }
+ * Étape 2 : PATCH /api/reservations/{id} → met à jour l'evaluationId de la réservation
+ *           avec l'id retourné par l'étape 1 (parseInt car evaluationId est un int côté Java)
+ */
 async function soumettreAvis() {
   if (noteAvis.value === 0) return
   envoiAvisEnCours.value = true
   erreurAvis.value = ''
   try {
-    await http.post('api/reviews', {
+    // Étape 1 — Créer l'avis (idReservation envoyé en String pour MongoDB)
+    const { data: avis } = await http.post('api/reviews', {
       idReservation: String(resaSelectionnee.value.id),
       note: noteAvis.value,
       commentaire: commentaireAvis.value,
     })
+
+    // Étape 2 — Patcher la réservation avec l'evaluationId de l'avis créé
+    await http.patch(`api/reservations/${resaSelectionnee.value.id}`, {
+    id: parseInt(resaSelectionnee.value.id),
+    description: resaSelectionnee.value.description,
+    date_debut: resaSelectionnee.value.date_debut,
+    date_fin: resaSelectionnee.value.date_fin,
+    movieId: parseInt(resaSelectionnee.value.movieId),
+    evaluationId: parseInt(avis.id.split('-')[0].substring(0, 4), 16), // UUID → int via première partie hex
+    userId: parseInt(resaSelectionnee.value.userId),
+    paiementId: parseInt(resaSelectionnee.value.paiementId),
+  })
+
     avisEnvoyé.value = true
   } catch (e) {
     const status = e.response?.status
@@ -370,10 +401,22 @@ async function soumettreAvis() {
   }
 }
 
+/**
+ * @function retour
+ * @description Redirige l'utilisateur vers la liste des films.
+ */
 function retour() {
   router.push('/films')
 }
 
+/**
+ * @function supprimerCompte
+ * @description Supprime définitivement le compte de l'utilisateur connecté.
+ *
+ * Étape 1 : DELETE /api/users/{id}       → supprime les données utilisateur
+ * Étape 2 : DELETE /auth/{pseudo}        → supprime les credentials d'auth
+ * Étape 3 : Redirige vers /login et déconnecte le store
+ */
 async function supprimerCompte() {
   suppressionEnCours.value = true
   erreurSuppression.value = ''
