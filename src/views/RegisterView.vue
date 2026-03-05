@@ -130,7 +130,7 @@ import { useRouter } from 'vue-router'
 import http from '@/api/http'
 
 const router = useRouter()
-
+// pour les champs
 const nom = ref('')
 const prenom = ref('')
 const pseudo = ref('')
@@ -138,7 +138,7 @@ const age = ref('')
 const adresse = ref('')
 const mdp = ref('')
 const mdpConfirm = ref('')
-
+// pour les messages
 const erreurNom = ref('')
 const erreurPrenom = ref('')
 const erreurPseudo = ref('')
@@ -150,6 +150,11 @@ const erreurGlobale = ref('')
 const chargement = ref(false)
 const succes = ref(false)
 
+/**
+ * Fonction permettant l'affichage du message d'erreur.
+ *
+ * @param erreur description de l'erreur
+ */
 function inputClass(erreur) {
   return [
     'w-full bg-zinc-800 border text-white placeholder-zinc-600 rounded-lg px-4 py-3 text-sm outline-none transition-colors duration-200',
@@ -157,6 +162,10 @@ function inputClass(erreur) {
   ]
 }
 
+/**
+ * Fonction pour valider la création du nouvel utilisateur,
+ * apres avoir vérifier les champs.
+ */
 function valider() {
   erreurNom.value = ''
   erreurPrenom.value = ''
@@ -200,6 +209,9 @@ function valider() {
   return valide
 }
 
+/**
+ * Fonction permettant la gestion des erreurs de saisie.
+ */
 async function handleRegister() {
   if (!valider()) return
 
@@ -252,6 +264,9 @@ async function handleRegister() {
   }
 }
 
+/**
+ * Route pour retourner à la page de connexion.
+ */
 function goToLogin() {
   router.push('/login')
 }

@@ -1,4 +1,5 @@
 <template>
+  <!-- Haut de page -->
   <header
     class="top-0 left-0 right-0 z-50 bg-zinc-950/90 backdrop-blur-md border-b border-red-900/30"
   >

@@ -79,6 +79,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
+// pour les champs
 const pseudo = ref('')
 const mdp = ref('')
 const erreurPseudo = ref('')
@@ -88,6 +89,10 @@ const chargement = ref(false)
 const router = useRouter()
 const auth = useAuthStore()
 
+/**
+ * Fonction pour valider la connexion de l'utilisateur,
+ * apres avoir vérifier les champs.
+ */
 function valider() {
   erreurPseudo.value = ''
   erreurMdp.value = ''
@@ -105,6 +110,9 @@ function valider() {
   return valide
 }
 
+/**
+ * Fonction permettant la gestion des erreurs de saisie.
+ */
 async function handleLogin() {
   if (!valider()) return
 
@@ -128,6 +136,9 @@ async function handleLogin() {
   }
 }
 
+/**
+ * Route pour retourner à la page de connexion.
+ */
 function goToRegister() {
   router.push('/register')
 }
