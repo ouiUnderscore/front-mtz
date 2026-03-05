@@ -72,6 +72,58 @@
       </div>
     </div>
 
+    <!-- Modale suppression -->
+    <div
+      v-if="modalSuppressionOuverte"
+      class="fixed inset-0 z-50 flex items-center justify-center px-4"
+    >
+      <div
+        class="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        @click="fermerModalSuppression"
+      ></div>
+
+      <div
+        class="relative w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-2xl shadow-black/60"
+      >
+        <div class="flex flex-col items-center gap-4 mb-6">
+          <span class="text-4xl">🗑️</span>
+          <h2 class="text-white text-center font-bold text-lg">Supprimer le film</h2>
+          <p class="text-zinc-400 text-center text-sm leading-relaxed">
+            Êtes-vous sûr de vouloir supprimer
+            <span class="text-white font-semibold">« {{ film?.titre }} »</span> ? Cette action est
+            irréversible.
+          </p>
+        </div>
+
+        <!-- Erreur suppression -->
+        <div
+          v-if="erreurSuppression"
+          class="mb-4 bg-red-950/50 border border-red-800/50 rounded-lg px-4 py-3 flex items-center gap-2"
+        >
+          <span class="text-red-400">⚠️</span>
+          <p class="text-red-400 text-xs">{{ erreurSuppression }}</p>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <button
+            @click="confirmerSuppression"
+            :disabled="chargementSuppression"
+            class="w-full bg-red-700 hover:bg-red-600 disabled:bg-red-900 disabled:cursor-not-allowed text-white font-semibold uppercase tracking-widest text-sm py-3 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <span v-if="chargementSuppression" class="animate-spin">⏳</span>
+            <span>{{ chargementSuppression ? 'Suppression...' : 'Confirmer la suppression' }}</span>
+          </button>
+          <button
+            @click="fermerModalSuppression"
+            :disabled="chargementSuppression"
+            class="w-full bg-transparent hover:bg-zinc-800 text-zinc-300 font-semibold uppercase tracking-widest text-sm py-3 rounded-lg border border-zinc-700 hover:border-zinc-500 transition-all duration-200"
+          >
+            Annuler
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="relative flex-1 flex flex-col px-6 py-12 max-w-3xl mx-auto w-full">
       <!-- Bouton retour -->
       <button
@@ -131,15 +183,24 @@
             <p class="text-zinc-400 text-sm leading-relaxed">{{ film.description }}</p>
 
             <div class="mt-auto pt-2 flex flex-col gap-3">
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between gap-3">
                 <span class="text-red-400 font-black text-2xl">{{ film.prix.toFixed(2) }} €</span>
-                <button
-                  v-if="film.estDisponible"
-                  @click="ouvrirModal"
-                  class="bg-red-600 hover:bg-red-500 text-white font-semibold uppercase tracking-widest text-xs px-6 py-3 rounded-lg transition-colors duration-200"
-                >
-                  Réserver
-                </button>
+                <div class="flex items-center gap-2">
+                  <button
+                    v-if="film.estDisponible"
+                    @click="ouvrirModal"
+                    class="bg-red-600 hover:bg-red-500 text-white font-semibold uppercase tracking-widest text-xs px-6 py-3 rounded-lg transition-colors duration-200"
+                  >
+                    Réserver
+                  </button>
+                  <button
+                    @click="ouvrirModalSuppression"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-red-700 text-zinc-400 hover:text-red-400 font-semibold uppercase tracking-widest text-xs px-4 py-3 rounded-lg transition-all duration-200"
+                    title="Supprimer le film"
+                  >
+                    🗑️
+                  </button>
+                </div>
               </div>
               <!-- Message d'erreur d'accès -->
               <div
@@ -178,6 +239,10 @@ const modalOuverte = ref(false)
 const erreurReservation = ref('')
 const chargementReservation = ref(false)
 const succes = ref(false)
+
+const modalSuppressionOuverte = ref(false)
+const erreurSuppression = ref('')
+const chargementSuppression = ref(false)
 
 // formulaire de réservation init
 const form_reservation = ref({
@@ -307,7 +372,37 @@ async function confirmerReservation() {
   }
 }
 
-// récupère et stocke film dans dans film.value
+function ouvrirModalSuppression() {
+  erreurSuppression.value = ''
+  modalSuppressionOuverte.value = true
+}
+
+function fermerModalSuppression() {
+  if (chargementSuppression.value) return
+  modalSuppressionOuverte.value = false
+  erreurSuppression.value = ''
+}
+
+async function confirmerSuppression() {
+  erreurSuppression.value = ''
+  chargementSuppression.value = true
+
+  try {
+    await http.delete(`/api/films/${film.value.id}`)
+    router.push('/films')
+  } catch (e) {
+    const status = e.response?.status
+    if (status === 401) erreurSuppression.value = 'Session expirée, veuillez vous reconnecter.'
+    else if (status === 403)
+      erreurSuppression.value = "Vous n'avez pas les droits pour supprimer ce film."
+    else if (status === 404) erreurSuppression.value = 'Film introuvable.'
+    else if (status >= 500) erreurSuppression.value = 'Erreur serveur, réessayez plus tard.'
+    else erreurSuppression.value = 'Suppression impossible, vérifiez votre réseau.'
+  } finally {
+    chargementSuppression.value = false
+  }
+}
+
 async function chargerFilm() {
   chargement.value = true
   erreur.value = ''
