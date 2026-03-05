@@ -140,7 +140,7 @@
           </h3>
 
           <div
-            v-if="avisEnvoyé"
+            v-if="avisEnvoye"
             class="bg-green-950/40 border border-green-800/40 rounded-lg px-4 py-3 text-green-400 text-sm text-center"
           >
             ✓ Merci pour votre avis !
@@ -351,35 +351,36 @@ const auth = useAuthStore()
 const user = computed(() => auth.currentUser)
 const router = useRouter()
 
-// --- Suppression compte ---
+// Suppression compte
 const afficherModale = ref(false)
 const suppressionEnCours = ref(false)
 const erreurSuppression = ref('')
 
-// --- Réservations ---
+// Réservations
 const reservations = ref([])
 const chargementReservations = ref(false)
 
-// --- Modale réservation ---
+// Modale réservation
 const resaSelectionnee = ref(null)
 const avisExistant = ref(null)
 
-// --- Annulation réservation ---
+// Annulation réservation
 const annulationEnCours = ref(false)
 const erreurAnnulation = ref('')
 
-// --- Formulaire avis ---
+// Formulaire avis
 const noteAvis = ref(0)
 const commentaireAvis = ref('')
 const envoiAvisEnCours = ref(false)
 const erreurAvis = ref('')
-const avisEnvoyé = ref(false)
+const avisEnvoye = ref(false)
 
 const initiales = computed(() => {
   if (!user.value) return '?'
   return `${user.value.prenom?.[0] ?? ''}${user.value.nom?.[0] ?? ''}`.toUpperCase()
 })
 
+// au chargement, récupère les reservations
 onMounted(async () => {
   if (!user.value?.id) return
   chargementReservations.value = true
@@ -406,7 +407,7 @@ async function ouvrirResa(resa) {
   commentaireAvis.value = ''
   erreurAvis.value = ''
   erreurAnnulation.value = ''
-  avisEnvoyé.value = false
+  avisEnvoye.value = false
 
   try {
     const { data } = await http.get(`api/reviews?idReservation=${resa.id}`)
@@ -426,7 +427,6 @@ function fermerResaModale() {
   avisExistant.value = null
   erreurAnnulation.value = ''
 }
-
 async function trouverFilmParIdInt(idInt) {
   const { data: films } = await http.get('api/films')
   return films.find((f) => parseInt(f.id.split('-')[0].substring(0, 4), 16) === idInt) ?? null
@@ -445,9 +445,11 @@ async function annulerReservation(resa) {
   annulationEnCours.value = true
   erreurAnnulation.value = ''
   try {
+    // supprime la reservation
     await http.delete(`api/reservations/${resa.id}`)
     const film = await trouverFilmParIdInt(parseInt(resa.movieId))
     if (film) {
+      // met le film à "disponible"
       await http.patch('/api/films/' + film.id + '/open', {
         headers: { 'Content-Type': 'application/json' },
       })
@@ -498,7 +500,7 @@ async function soumettreAvis() {
     //   paiementId: parseInt(resaSelectionnee.value.paiementId),
     // })
 
-    avisEnvoyé.value = true
+    avisEnvoye.value = true
   } catch (e) {
     const status = e.response?.status
     if (status === 400) {
@@ -533,7 +535,9 @@ async function supprimerCompte() {
   suppressionEnCours.value = true
   erreurSuppression.value = ''
   try {
+    // supprime dans la liste des utilisateurs
     await http.delete(`/api/users/${user.value.id}`)
+    // supprime dans la liste des logins
     await http.delete(`/auth/${user.value.pseudo}`)
     router.push('/login')
     auth.logout()

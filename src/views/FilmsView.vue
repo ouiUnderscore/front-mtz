@@ -118,6 +118,7 @@ const chargement = ref(false)
 const erreur = ref('')
 const router = useRouter()
 
+// récupère la liste des films
 async function chargerFilms() {
   chargement.value = true
   erreur.value = ''
@@ -142,11 +143,9 @@ async function chargerFilms() {
 function voirFilm(id) {
   router.push(`/films/${id}`)
 }
-
 function ajouterFilm() {
   router.push('/films/ajouter')
 }
-
 onMounted(() => {
   chargerFilms()
 })

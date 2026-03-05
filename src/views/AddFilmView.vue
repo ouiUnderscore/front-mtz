@@ -23,10 +23,13 @@
       </div>
 
       <!-- Formulaire -->
-      <div class="bg-zinc-900/80 backdrop-blur border border-zinc-800 rounded-xl p-8 shadow-xl shadow-black/40">
-
-        <!-- ── Informations générales ── -->
-        <h2 class="text-zinc-400 text-xs uppercase tracking-widest mb-5 pb-2 border-b border-zinc-800">
+      <div
+        class="bg-zinc-900/80 backdrop-blur border border-zinc-800 rounded-xl p-8 shadow-xl shadow-black/40"
+      >
+        <!-- Informations générales -->
+        <h2
+          class="text-zinc-400 text-xs uppercase tracking-widest mb-5 pb-2 border-b border-zinc-800"
+        >
           Informations générales
         </h2>
 
@@ -44,7 +47,9 @@
 
         <!-- Description -->
         <div class="mb-5">
-          <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">Description</label>
+          <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2"
+            >Description</label
+          >
           <textarea
             v-model="description"
             rows="4"
@@ -57,7 +62,9 @@
         <!-- Année + Âge minimum -->
         <div class="grid grid-cols-2 gap-4 mb-5">
           <div>
-            <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">Année de réalisation</label>
+            <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2"
+              >Année de réalisation</label
+            >
             <input
               v-model="anneeReal"
               type="number"
@@ -69,7 +76,9 @@
             <p v-if="erreurAnneeReal" class="text-red-400 text-xs mt-1">{{ erreurAnneeReal }}</p>
           </div>
           <div>
-            <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">Âge minimum</label>
+            <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2"
+              >Âge minimum</label
+            >
             <input
               v-model="ageMin"
               type="number"
@@ -98,7 +107,9 @@
 
         <!-- Disponibilité -->
         <div class="mb-8">
-          <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-3">Disponibilité</label>
+          <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-3"
+            >Disponibilité</label
+          >
           <div class="flex items-center gap-4">
             <button
               type="button"
@@ -127,15 +138,19 @@
           </div>
         </div>
 
-        <!-- ── Médias & Personnes ── -->
-        <h2 class="text-zinc-400 text-xs uppercase tracking-widest mb-5 pb-2 border-b border-zinc-800">
+        <!-- Médias & Personnes -->
+        <h2
+          class="text-zinc-400 text-xs uppercase tracking-widest mb-5 pb-2 border-b border-zinc-800"
+        >
           Médias &amp; Personnes
         </h2>
 
         <!-- Poster ID + Réalisateur ID -->
         <div class="grid grid-cols-2 gap-4 mb-5">
           <div>
-            <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">ID Poster</label>
+            <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2"
+              >ID Poster</label
+            >
             <input
               v-model="posterId"
               type="text"
@@ -145,20 +160,26 @@
             <p v-if="erreurPosterId" class="text-red-400 text-xs mt-1">{{ erreurPosterId }}</p>
           </div>
           <div>
-            <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">ID Réalisateur</label>
+            <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2"
+              >ID Réalisateur</label
+            >
             <input
               v-model="realisateurId"
               type="text"
               placeholder="Ex : real-abc123"
               :class="inputClass(erreurRealisateurId)"
             />
-            <p v-if="erreurRealisateurId" class="text-red-400 text-xs mt-1">{{ erreurRealisateurId }}</p>
+            <p v-if="erreurRealisateurId" class="text-red-400 text-xs mt-1">
+              {{ erreurRealisateurId }}
+            </p>
           </div>
         </div>
 
         <!-- Artistes -->
         <div class="mb-5">
-          <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">IDs Artistes</label>
+          <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2"
+            >IDs Artistes</label
+          >
           <div v-if="artisteIds.length > 0" class="flex flex-wrap gap-2 mb-2">
             <span
               v-for="(id, index) in artisteIds"
@@ -170,7 +191,9 @@
                 type="button"
                 @click="retirerArtiste(index)"
                 class="text-zinc-500 hover:text-red-400 transition-colors duration-150 leading-none"
-              >✕</button>
+              >
+                ✕
+              </button>
             </span>
           </div>
           <div class="flex gap-2">
@@ -194,7 +217,9 @@
 
         <!-- Genres -->
         <div class="mb-8">
-          <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">IDs Genres</label>
+          <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2"
+            >IDs Genres</label
+          >
           <div v-if="genreIds.length > 0" class="flex flex-wrap gap-2 mb-2">
             <span
               v-for="(id, index) in genreIds"
@@ -206,7 +231,9 @@
                 type="button"
                 @click="retirerGenre(index)"
                 class="text-zinc-500 hover:text-red-400 transition-colors duration-150 leading-none"
-              >✕</button>
+              >
+                ✕
+              </button>
             </span>
           </div>
           <div class="flex gap-2">
@@ -281,7 +308,7 @@ import Footer from '@/components/Footer.vue'
 const router = useRouter()
 const anneeMax = new Date().getFullYear()
 
-// ── Champs simples ──
+// Champs simples
 const titre = ref('')
 const description = ref('')
 const anneeReal = ref('')
@@ -291,13 +318,13 @@ const estDisponible = ref(true)
 const posterId = ref('')
 const realisateurId = ref('')
 
-// ── Champs listes ──
+// Champs listes
 const artisteIds = ref([])
 const nouvelArtisteId = ref('')
 const genreIds = ref([])
 const nouveauGenreId = ref('')
 
-// ── Erreurs ──
+// Erreurs
 const erreurTitre = ref('')
 const erreurDescription = ref('')
 const erreurAnneeReal = ref('')
@@ -308,11 +335,10 @@ const erreurRealisateurId = ref('')
 const erreurArtisteIds = ref('')
 const erreurGenreIds = ref('')
 const erreurGlobale = ref('')
-
 const chargement = ref(false)
 const succes = ref(false)
 
-// ── Helpers ──
+// Helpers
 function inputClass(erreur) {
   return [
     'w-full bg-zinc-800 border text-white placeholder-zinc-600 rounded-lg px-4 py-3 text-sm outline-none transition-colors duration-200',
@@ -320,6 +346,7 @@ function inputClass(erreur) {
   ]
 }
 
+// Ajout de l'artiste entré dans la liste des artistes
 function ajouterArtiste() {
   const val = nouvelArtisteId.value.trim()
   if (!val) return
@@ -331,11 +358,11 @@ function ajouterArtiste() {
   nouvelArtisteId.value = ''
   erreurArtisteIds.value = ''
 }
-
 function retirerArtiste(index) {
   artisteIds.value.splice(index, 1)
 }
 
+// Ajoute du genre dans la liste des genres
 function ajouterGenre() {
   const val = nouveauGenreId.value.trim()
   if (!val) return
@@ -347,12 +374,11 @@ function ajouterGenre() {
   nouveauGenreId.value = ''
   erreurGenreIds.value = ''
 }
-
 function retirerGenre(index) {
   genreIds.value.splice(index, 1)
 }
 
-// ── Validation ──
+// Validation des champs
 function valider() {
   erreurTitre.value = ''
   erreurDescription.value = ''
@@ -409,7 +435,7 @@ function valider() {
   return valide
 }
 
-// ── Soumission ──
+// Ajout du film
 async function handleSubmit() {
   if (!valider()) return
 

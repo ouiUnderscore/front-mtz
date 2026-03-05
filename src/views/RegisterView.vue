@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen bg-zinc-950 flex flex-col">
     <div class="relative flex-1 flex flex-col items-center justify-center px-4 py-20">
+      <!-- titre -->
       <div class="text-center mb-10">
         <span class="text-4xl">🎬</span>
         <h1 class="text-4xl font-black tracking-[0.2em] uppercase text-white mb-1 mt-3">
@@ -12,6 +13,7 @@
         class="w-full max-w-md bg-zinc-900/80 backdrop-blur border border-zinc-800 rounded-xl p-8 shadow-2xl shadow-black/60"
       >
         <h2 class="text-white font-semibold text-lg mb-6 tracking-wide">Créer un compte</h2>
+        <!-- champs prenom nom -->
         <div class="grid grid-cols-2 gap-3 mb-4">
           <div>
             <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">Nom</label>
@@ -29,6 +31,7 @@
             <p v-if="erreurPrenom" class="text-red-400 text-xs mt-1">{{ erreurPrenom }}</p>
           </div>
         </div>
+        <!-- champs pseudo -->
         <div class="mb-4">
           <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">Pseudo</label>
           <input
@@ -39,6 +42,7 @@
           />
           <p v-if="erreurPseudo" class="text-red-400 text-xs mt-1">{{ erreurPseudo }}</p>
         </div>
+        <!-- champ age  -->
         <div class="mb-4">
           <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">Âge</label>
           <input
@@ -51,6 +55,7 @@
           />
           <p v-if="erreurAge" class="text-red-400 text-xs mt-1">{{ erreurAge }}</p>
         </div>
+        <!-- champ adresse -->
         <div class="mb-4">
           <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2">Adresse</label>
           <input
@@ -61,6 +66,7 @@
           />
           <p v-if="erreurAdresse" class="text-red-400 text-xs mt-1">{{ erreurAdresse }}</p>
         </div>
+        <!-- champ mdp -->
         <div class="mb-4">
           <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2"
             >Mot de passe</label
@@ -73,6 +79,7 @@
           />
           <p v-if="erreurMdp" class="text-red-400 text-xs mt-1">{{ erreurMdp }}</p>
         </div>
+        <!-- champ confirmer mdp -->
         <div class="mb-6">
           <label class="block text-zinc-400 text-xs uppercase tracking-widest mb-2"
             >Confirmer le mot de passe</label
@@ -86,6 +93,7 @@
           />
           <p v-if="erreurMdpConfirm" class="text-red-400 text-xs mt-1">{{ erreurMdpConfirm }}</p>
         </div>
+        <!-- erreur -->
         <div
           v-if="erreurGlobale"
           class="mb-4 bg-red-950/50 border border-red-800/50 rounded-lg px-4 py-3 flex items-center gap-2"
@@ -93,6 +101,7 @@
           <span class="text-red-400 text-base">⚠️</span>
           <p class="text-red-400 text-xs">{{ erreurGlobale }}</p>
         </div>
+        <!-- success -->
         <div
           v-if="succes"
           class="mb-4 bg-green-950/50 border border-green-800/50 rounded-lg px-4 py-3 flex items-center gap-2"
@@ -177,6 +186,7 @@ function valider() {
   erreurGlobale.value = ''
   let valide = true
 
+  // erreurs
   if (!nom.value.trim()) {
     erreurNom.value = 'Le nom est obligatoire'
     valide = false
@@ -217,12 +227,14 @@ async function handleRegister() {
 
   chargement.value = true
   try {
+    // enregistre l'utilisateur dans la bdd des users
     await http.post(
       '/auth/register',
       { pseudo: pseudo.value, mdp: mdp.value },
       { headers: { 'Content-Type': 'application/json' } },
     )
 
+    // connecte
     const { data } = await http.post(
       '/auth/login',
       { pseudo: pseudo.value, mdp: mdp.value },
@@ -230,6 +242,7 @@ async function handleRegister() {
     )
     localStorage.setItem('token', data.jeton)
 
+    //crée l'utilisateur
     await http.post(
       '/api/users',
       {

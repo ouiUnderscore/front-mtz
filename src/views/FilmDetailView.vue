@@ -37,7 +37,7 @@
             <div class="flex flex-col gap-1">
               <label class="text-zinc-500 text-xs uppercase tracking-widest">Date début</label>
               <input
-                v-model="form_avis.date_debut"
+                v-model="form_reservation.date_debut"
                 type="date"
                 class="bg-zinc-800 border border-zinc-700 focus:border-red-500 text-white text-sm rounded-lg px-4 py-2.5 outline-none transition-colors"
               />
@@ -45,7 +45,7 @@
             <div class="flex flex-col gap-1">
               <label class="text-zinc-500 text-xs uppercase tracking-widest">Date fin</label>
               <input
-                v-model="form_avis.date_fin"
+                v-model="form_reservation.date_fin"
                 type="date"
                 class="bg-zinc-800 border border-zinc-700 focus:border-red-500 text-white text-sm rounded-lg px-4 py-2.5 outline-none transition-colors"
               />
@@ -161,7 +161,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, cloneVNode } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import http from '@/api/http'
 import Header from '@/components/Header.vue'
@@ -174,13 +174,13 @@ const erreur = ref('')
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
-
 const modalOuverte = ref(false)
 const erreurReservation = ref('')
 const chargementReservation = ref(false)
 const succes = ref(false)
 
-const form_avis = ref({
+// formulaire de réservation init
+const form_reservation = ref({
   id: 0,
   description: '',
   date_debut: '',
@@ -191,13 +191,13 @@ const form_avis = ref({
   paiementId: 0,
 })
 
-// Ajouter ces refs
-const erreurAcces = ref('') // message d'erreur avant ouverture modale
+// message d'erreur avant ouverture modale
+const erreurAcces = ref('')
 
 async function ouvrirModal() {
   erreurAcces.value = ''
 
-  // 1. Rafraîchir l'utilisateur
+  // rafraîchir l'utilisateur
   try {
     await auth.fetchUser(auth.currentUser.pseudo)
   } catch (e) {
@@ -207,16 +207,19 @@ async function ouvrirModal() {
 
   const user = auth.currentUser
 
-  // 2. Vérifier l'âge
+  // vérifier l'âge
   if (user.age < film.value.ageMin) {
     erreurAcces.value = `Vous devez avoir au moins ${film.value.ageMin} ans pour réserver ce film.`
     return
   }
 
-  // 3. Vérifier le nombre de réservations via l'API
+  // vérifier que l'user a moins de 3 reservations
   try {
+    // recup liste reservations
     const { data } = await http.get('api/reservations')
+    // chercher les reservations de l'user
     const reservationsUser = data.data.filter((r) => parseInt(r.userId) === parseInt(user.id))
+    // si il en a + de 3 erreur
     if (reservationsUser.length >= 3) {
       erreurAcces.value = 'Vous avez atteint le maximum de 3 réservations simultanées.'
       return
@@ -226,7 +229,8 @@ async function ouvrirModal() {
     return
   }
 
-  form_avis.value = {
+  // maj des champs du form
+  form_reservation.value = {
     id: null,
     description: `Location de "${film.value?.titre}"`,
     date_debut: new Date().toISOString().split('T')[0],
@@ -252,12 +256,12 @@ function fermerModal() {
 async function confirmerReservation() {
   erreurReservation.value = ''
 
-  // Validation dates
-  const debut = new Date(form_avis.value.date_debut)
-  const fin = new Date(form_avis.value.date_fin)
+  // verifs dates
+  const debut = new Date(form_reservation.value.date_debut)
+  const fin = new Date(form_reservation.value.date_fin)
   const diffJours = (fin - debut) / (1000 * 60 * 60 * 24)
 
-  if (!form_avis.value.date_debut || !form_avis.value.date_fin) {
+  if (!form_reservation.value.date_debut || !form_reservation.value.date_fin) {
     erreurReservation.value = 'Veuillez renseigner les deux dates.'
     return
   }
@@ -273,22 +277,24 @@ async function confirmerReservation() {
   chargementReservation.value = true
 
   try {
+    // ajout de la reservation
     await http.post(
       '/api/reservations',
       {
-        ...form_avis.value,
-        date_debut: form_avis.value.date_debut.split('-').reverse().join('-'),
-        date_fin: form_avis.value.date_fin.split('-').reverse().join('-'),
+        ...form_reservation.value,
+        // maj des champs date pour passer de yyyy-mm-dd à dd-mm-yyyy
+        date_debut: form_reservation.value.date_debut.split('-').reverse().join('-'),
+        date_fin: form_reservation.value.date_fin.split('-').reverse().join('-'),
       },
       {
         headers: { 'Content-Type': 'application/json' },
       },
     )
+    // met le film à "non disponible"
     await http.patch('/api/films/' + film.value.id + '/close', {
       headers: { 'Content-Type': 'application/json' },
     })
     film.value.estDisponible = false
-
     succes.value = true
     setTimeout(() => fermerModal(), 2000)
   } catch (e) {
@@ -301,6 +307,7 @@ async function confirmerReservation() {
   }
 }
 
+// récupère et stocke film dans dans film.value
 async function chargerFilm() {
   chargement.value = true
   erreur.value = ''
