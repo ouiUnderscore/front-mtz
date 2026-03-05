@@ -14,6 +14,17 @@
         <p class="text-zinc-500 text-xs tracking-widest uppercase">Votre cinéma, partout</p>
       </div>
 
+      <!-- Barre d'actions -->
+      <div class="flex justify-end max-w-7xl mx-auto w-full mb-6">
+        <button
+          @click="ajouterFilm"
+          class="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-semibold uppercase tracking-widest text-xs px-5 py-2.5 rounded-lg transition-colors duration-200"
+        >
+          <span class="text-base leading-none">＋</span>
+          <span>Ajouter un film</span>
+        </button>
+      </div>
+
       <!-- Chargement -->
       <div v-if="chargement" class="flex flex-col items-center justify-center flex-1 gap-3">
         <span class="animate-spin text-4xl">⏳</span>
@@ -130,6 +141,10 @@ async function chargerFilms() {
 
 function voirFilm(id) {
   router.push(`/films/${id}`)
+}
+
+function ajouterFilm() {
+  router.push('/films/ajouter')
 }
 
 onMounted(() => {

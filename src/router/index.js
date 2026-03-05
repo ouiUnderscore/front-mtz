@@ -11,6 +11,16 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/films/ajouter',
+      component: () => import('@/views/AddFilmView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/films/:id',
+      component: () => import('@/views/FilmDetailView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/profil',
       component: () => import('@/views/ProfilPageView.vue'),
       meta: { requiresAuth: true },
@@ -21,11 +31,6 @@ const router = createRouter({
         const auth = useAuthStore()
         return auth.isAuthenticated ? '/films' : '/login'
       },
-    },
-    {
-      path: '/films/:id',
-      component: () => import('@/views/FilmDetailView.vue'),
-      meta: { requiresAuth: true },
     },
     {
       path: '/register',
