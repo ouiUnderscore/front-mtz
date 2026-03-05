@@ -81,6 +81,7 @@
             v-model="mdpConfirm"
             type="password"
             placeholder="••••••••"
+            @keyup.enter="handleLogin"
             :class="inputClass(erreurMdpConfirm)"
           />
           <p v-if="erreurMdpConfirm" class="text-red-400 text-xs mt-1">{{ erreurMdpConfirm }}</p>
